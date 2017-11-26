@@ -14,6 +14,7 @@ resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositor
 
 libraryDependencies ++= {
   val silhouetteVersion = "5.0.2"
+  val scalikeJDBCV = "2.5.1"
   Seq(
     guice,
     ehcache,
@@ -34,6 +35,11 @@ libraryDependencies ++= {
     "net.codingwell" %% "scala-guice" % "4.1.0",
     "com.iheart" %% "ficus" % "1.4.1",
     "net.codingwell" %% "scala-guice" % "4.1.0",
+
+    //ScalikeJDBC dependencies
+    "org.scalikejdbc" %% "scalikejdbc"                     % scalikeJDBCV,
+    "org.scalikejdbc" %% "scalikejdbc-config"              % scalikeJDBCV,
+    "mysql" % "mysql-connector-java" % "5.1.33",
 
     "com.iheart" %% "ficus" % "1.4.1",
     "com.typesafe.play" %% "play-mailer" % "6.0.1",
@@ -85,3 +91,9 @@ scalariformPreferences := scalariformPreferences.value
   .setPreference(AlignSingleLineCaseStatements, true)
   .setPreference(DoubleIndentConstructorArguments, true)
   .setPreference(DanglingCloseParenthesis, Preserve)
+
+
+//********************************************************
+// ScalikeJDBC settings
+//********************************************************
+scalikejdbcSettings

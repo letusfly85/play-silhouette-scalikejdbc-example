@@ -91,7 +91,8 @@ class SignInController @Inject() (
             case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
           }
         }.recover {
-          case _: ProviderException =>
+          case e: ProviderException =>
+            e.printStackTrace()
             Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.credentials"))
         }
       }

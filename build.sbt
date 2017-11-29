@@ -14,7 +14,7 @@ resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositor
 
 libraryDependencies ++= {
   val silhouetteVersion = "5.0.2"
-  val scalikeJDBCV = "2.5.1"
+  val scalikeJDBCV = "3.0.2"
   Seq(
     guice,
     ehcache,
@@ -39,6 +39,7 @@ libraryDependencies ++= {
     //ScalikeJDBC dependencies
     "org.scalikejdbc" %% "scalikejdbc"                     % scalikeJDBCV,
     "org.scalikejdbc" %% "scalikejdbc-config"              % scalikeJDBCV,
+    "org.scalikejdbc" %% "scalikejdbc-play-initializer"    % "2.6.0-scalikejdbc-3.0",
     "mysql" % "mysql-connector-java" % "5.1.33",
 
     "com.iheart" %% "ficus" % "1.4.1",

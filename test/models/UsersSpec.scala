@@ -36,7 +36,7 @@ class UsersSpec extends Specification {
       count should be_>(0L)
     }
     "create new record" in new AutoRollback {
-      val created = Users.create(userId = "MyString", password = "MyString", email = "MyString")
+      val created = Users.create(userId = "MyString", hasher = "MyString", password = "MyString", email = "MyString")
       created should not beNull
     }
     "save a record" in new AutoRollback {

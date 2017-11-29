@@ -5,6 +5,8 @@ import scalikejdbc._
 case class Users(
     id: Int,
     userId: String,
+    hasher: String,
+    salt: Option[String] = None,
     password: String,
     firstName: Option[String] = None,
     lastName: Option[String] = None,
@@ -22,14 +24,16 @@ object Users extends SQLSyntaxSupport[Users] {
 
   override val schemaName = Some("example")
 
-  override val tableName = "USERS"
+  override val tableName = "users"
 
-  override val columns = Seq("id", "user_id", "password", "first_name", "last_name", "email", "avatar_url", "activated")
+  override val columns = Seq("id", "user_id", "hasher", "salt", "password", "first_name", "last_name", "email", "avatar_url", "activated")
 
   def apply(u: SyntaxProvider[Users])(rs: WrappedResultSet): Users = apply(u.resultName)(rs)
   def apply(u: ResultName[Users])(rs: WrappedResultSet): Users = new Users(
     id = rs.get(u.id),
     userId = rs.get(u.userId),
+    hasher = rs.get(u.hasher),
+    salt = rs.get(u.salt),
     password = rs.get(u.password),
     firstName = rs.get(u.firstName),
     lastName = rs.get(u.lastName),
@@ -76,6 +80,8 @@ object Users extends SQLSyntaxSupport[Users] {
 
   def create(
     userId: String,
+    hasher: String,
+    salt: Option[String] = None,
     password: String,
     firstName: Option[String] = None,
     lastName: Option[String] = None,
@@ -85,6 +91,8 @@ object Users extends SQLSyntaxSupport[Users] {
     val generatedKey = withSQL {
       insert.into(Users).namedValues(
         column.userId -> userId,
+        column.hasher -> hasher,
+        column.salt -> salt,
         column.password -> password,
         column.firstName -> firstName,
         column.lastName -> lastName,
@@ -97,6 +105,8 @@ object Users extends SQLSyntaxSupport[Users] {
     Users(
       id = generatedKey.toInt,
       userId = userId,
+      hasher = hasher,
+      salt = salt,
       password = password,
       firstName = firstName,
       lastName = lastName,
@@ -109,14 +119,18 @@ object Users extends SQLSyntaxSupport[Users] {
     val params: Seq[Seq[(Symbol, Any)]] = entities.map(entity =>
       Seq(
         'userId -> entity.userId,
+        'hasher -> entity.hasher,
+        'salt -> entity.salt,
         'password -> entity.password,
         'firstName -> entity.firstName,
         'lastName -> entity.lastName,
         'email -> entity.email,
         'avatarUrl -> entity.avatarUrl,
         'activated -> entity.activated))
-    SQL("""insert into USERS(
+    SQL("""insert into users(
       user_id,
+      hasher,
+      salt,
       password,
       first_name,
       last_name,
@@ -125,6 +139,8 @@ object Users extends SQLSyntaxSupport[Users] {
       activated
     ) values (
       {userId},
+      {hasher},
+      {salt},
       {password},
       {firstName},
       {lastName},
@@ -139,6 +155,8 @@ object Users extends SQLSyntaxSupport[Users] {
       update(Users).set(
         column.id -> entity.id,
         column.userId -> entity.userId,
+        column.hasher -> entity.hasher,
+        column.salt -> entity.salt,
         column.password -> entity.password,
         column.firstName -> entity.firstName,
         column.lastName -> entity.lastName,

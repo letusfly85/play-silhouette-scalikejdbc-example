@@ -3,7 +3,7 @@ package models.daos
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import models.User
+import models.{ User, Users }
 import models.daos.UserDAOImpl._
 
 import scala.collection.mutable
@@ -20,9 +20,10 @@ class UserDAOImpl extends UserDAO {
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def find(loginInfo: LoginInfo) = Future.successful(
-    users.find { case (_, user) => user.loginInfo == loginInfo }.map(_._2)
-  )
+  def find(loginInfo: LoginInfo) =
+    Future.successful(
+      users.find { case (_, user) => user.loginInfo == loginInfo }.map(_._2)
+    )
 
   /**
    * Finds a user by its user ID.
@@ -52,5 +53,27 @@ object UserDAOImpl {
   /**
    * The list of users.
    */
-  val users: mutable.HashMap[UUID, User] = mutable.HashMap()
+  val users: mutable.HashMap[UUID, User] = findAll() //mutable.HashMap()
+
+  def findAll(): mutable.HashMap[UUID, User] = {
+    val modelUsers = Users.findAll()
+
+    convertSilhouetteUser(modelUsers)
+  }
+
+  def convertSilhouetteUser(modelUsers: List[Users]): mutable.HashMap[UUID, User] = {
+    val silhouetteUsers = modelUsers.map { user =>
+      val uuid = java.util.UUID.fromString(user.userId)
+      val loginInfo = LoginInfo(providerID = "credentials", providerKey = user.email)
+
+      new User(userID = uuid, loginInfo = loginInfo, firstName = user.firstName, lastName = user.firstName,
+        fullName = Some(user.firstName.getOrElse("") + user.lastName.getOrElse("")),
+        email = Some(user.email), avatarURL = user.avatarUrl, activated = user.activated.getOrElse(false)
+      )
+    }
+
+    val userMap: mutable.HashMap[UUID, User] = mutable.HashMap[UUID, User]()
+    silhouetteUsers.map(su => userMap.put(su.userID, su))
+    userMap
+  }
 }

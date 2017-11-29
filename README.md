@@ -12,9 +12,11 @@ docker run --name example \
 ```
 
 ```sql
-CREATE TABLE USERS (
+CREATE TABLE users (
     id int AUTO_INCREMENT,
     user_id VARCHAR(300) NOT NULL UNIQUE,
+    hasher VARCHAR(300) NOT NULL,
+    salt VARCHAR(300),
     password VARCHAR(300) NOT NULL,
     first_name VARCHAR(300),
     last_name VARCHAR(300),

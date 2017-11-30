@@ -53,7 +53,7 @@ object UserDAOImpl {
   /**
    * The list of users.
    */
-  val users: mutable.HashMap[UUID, User] = findAll() //mutable.HashMap()
+  val users: mutable.HashMap[UUID, User] = findAll()
 
   def findAll(): mutable.HashMap[UUID, User] = {
     val modelUsers = Users.findAll()
@@ -66,9 +66,16 @@ object UserDAOImpl {
       val uuid = java.util.UUID.fromString(user.userId)
       val loginInfo = LoginInfo(providerID = "credentials", providerKey = user.email)
 
-      new User(userID = uuid, loginInfo = loginInfo, firstName = user.firstName, lastName = user.firstName,
+      new User(
+        userID = uuid,
+        loginInfo = loginInfo,
+        role = user.role,
+        firstName = user.firstName,
+        lastName = user.firstName,
         fullName = Some(user.firstName.getOrElse("") + user.lastName.getOrElse("")),
-        email = Some(user.email), avatarURL = user.avatarUrl, activated = user.activated.getOrElse(false)
+        email = Some(user.email),
+        avatarURL = user.avatarUrl,
+        activated = user.activated.getOrElse(false)
       )
     }
 

@@ -5,6 +5,7 @@ import scalikejdbc._
 case class Users(
     id: Int,
     userId: String,
+    role: String,
     hasher: String,
     salt: Option[String] = None,
     password: String,
@@ -26,12 +27,13 @@ object Users extends SQLSyntaxSupport[Users] {
 
   override val tableName = "users"
 
-  override val columns = Seq("id", "user_id", "hasher", "salt", "password", "first_name", "last_name", "email", "avatar_url", "activated")
+  override val columns = Seq("id", "user_id", "role", "hasher", "salt", "password", "first_name", "last_name", "email", "avatar_url", "activated")
 
   def apply(u: SyntaxProvider[Users])(rs: WrappedResultSet): Users = apply(u.resultName)(rs)
   def apply(u: ResultName[Users])(rs: WrappedResultSet): Users = new Users(
     id = rs.get(u.id),
     userId = rs.get(u.userId),
+    role = rs.get(u.role),
     hasher = rs.get(u.hasher),
     salt = rs.get(u.salt),
     password = rs.get(u.password),
@@ -80,6 +82,7 @@ object Users extends SQLSyntaxSupport[Users] {
 
   def create(
     userId: String,
+    role: String,
     hasher: String,
     salt: Option[String] = None,
     password: String,
@@ -91,6 +94,7 @@ object Users extends SQLSyntaxSupport[Users] {
     val generatedKey = withSQL {
       insert.into(Users).namedValues(
         column.userId -> userId,
+        column.role -> role,
         column.hasher -> hasher,
         column.salt -> salt,
         column.password -> password,
@@ -105,6 +109,7 @@ object Users extends SQLSyntaxSupport[Users] {
     Users(
       id = generatedKey.toInt,
       userId = userId,
+      role = role,
       hasher = hasher,
       salt = salt,
       password = password,
@@ -119,6 +124,7 @@ object Users extends SQLSyntaxSupport[Users] {
     val params: Seq[Seq[(Symbol, Any)]] = entities.map(entity =>
       Seq(
         'userId -> entity.userId,
+        'role -> entity.role,
         'hasher -> entity.hasher,
         'salt -> entity.salt,
         'password -> entity.password,
@@ -129,6 +135,7 @@ object Users extends SQLSyntaxSupport[Users] {
         'activated -> entity.activated))
     SQL("""insert into users(
       user_id,
+      role,
       hasher,
       salt,
       password,
@@ -139,6 +146,7 @@ object Users extends SQLSyntaxSupport[Users] {
       activated
     ) values (
       {userId},
+      {role},
       {hasher},
       {salt},
       {password},
@@ -155,6 +163,7 @@ object Users extends SQLSyntaxSupport[Users] {
       update(Users).set(
         column.id -> entity.id,
         column.userId -> entity.userId,
+        column.role -> entity.role,
         column.hasher -> entity.hasher,
         column.salt -> entity.salt,
         column.password -> entity.password,

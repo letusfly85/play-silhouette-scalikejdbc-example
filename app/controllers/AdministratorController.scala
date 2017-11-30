@@ -19,7 +19,7 @@ import scala.concurrent.Future
  * @param webJarsUtil The webjar util.
  * @param assets      The Play assets finder.
  */
-class ApplicationController @Inject() (
+class AdministratorController @Inject() (
     components: ControllerComponents,
     silhouette: Silhouette[DefaultEnv]
 )(
@@ -33,7 +33,7 @@ class ApplicationController @Inject() (
    *
    * @return The result to display.
    */
-  def index = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+  def index = silhouette.SecuredAction(WithCredentialsProvider("credentials")).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.admin(request.identity)))
   }
 

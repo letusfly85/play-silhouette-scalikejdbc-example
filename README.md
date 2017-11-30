@@ -15,6 +15,7 @@ docker run --name example \
 CREATE TABLE users (
     id int AUTO_INCREMENT,
     user_id VARCHAR(300) NOT NULL UNIQUE,
+    role VARCHAR(300) NOT NULL DEFAULT 'normal',
     hasher VARCHAR(300) NOT NULL,
     salt VARCHAR(300),
     password VARCHAR(300) NOT NULL,

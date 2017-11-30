@@ -65,6 +65,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO)(implicit ex: ExecutionContext
         val user = User(
           userID = UUID.randomUUID(),
           loginInfo = profile.loginInfo,
+          role = "normal",
           firstName = profile.firstName,
           lastName = profile.lastName,
           fullName = profile.fullName,

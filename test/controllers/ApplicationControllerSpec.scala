@@ -38,7 +38,7 @@ class ApplicationControllerSpec extends PlaySpecification with Mockito {
 
         status(unauthorizedResult) must be equalTo OK
         contentType(unauthorizedResult) must beSome("text/html")
-        contentAsString(unauthorizedResult) must contain("Silhouette - Sign In")
+        contentAsString(unauthorizedResult) must contain("sign.in")
       }
     }
 
@@ -73,6 +73,7 @@ class ApplicationControllerSpec extends PlaySpecification with Mockito {
     val identity = User(
       userID = UUID.randomUUID(),
       loginInfo = LoginInfo("facebook", "user@facebook.com"),
+      role = "normal",
       firstName = None,
       lastName = None,
       fullName = None,

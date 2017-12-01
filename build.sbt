@@ -24,6 +24,7 @@ libraryDependencies ++= {
     "com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteVersion,
     "com.mohiva" %% "play-silhouette-persistence" % silhouetteVersion,
     "com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteVersion,
+    "com.mohiva" %% "play-silhouette-testkit" % silhouetteVersion,
 
     //webjar dependencies
     "org.webjars" %% "webjars-play" % "2.6.1",
@@ -40,13 +41,17 @@ libraryDependencies ++= {
     "org.scalikejdbc" %% "scalikejdbc"                     % scalikeJDBCV,
     "org.scalikejdbc" %% "scalikejdbc-config"              % scalikeJDBCV,
     "org.scalikejdbc" %% "scalikejdbc-play-initializer"    % "2.6.0-scalikejdbc-3.0",
+    "org.scalikejdbc" %% "scalikejdbc-test" % scalikeJDBCV % Test,
     "mysql" % "mysql-connector-java" % "5.1.33",
 
     "com.iheart" %% "ficus" % "1.4.1",
     "com.typesafe.play" %% "play-mailer" % "6.0.1",
     "com.typesafe.play" %% "play-mailer-guice" % "6.0.1",
     "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
+
+    //"org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+    "com.typesafe.play" %% "play-specs2" % "2.6.7" % Test,
+    "org.specs2" %% "specs2" % "2.5" % Test
   )
 }
 

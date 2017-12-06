@@ -6,6 +6,7 @@ import scalikejdbc._
 
 class UsersSpec extends Specification {
 
+  /*
   "Users" should {
 
     val u = Users.syntax("u")
@@ -59,5 +60,6 @@ class UsersSpec extends Specification {
       batchInserted.size should be_>(0)
     }
   }
+  */
 
 }

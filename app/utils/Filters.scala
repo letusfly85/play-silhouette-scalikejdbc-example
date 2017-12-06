@@ -11,6 +11,6 @@ import play.filters.headers.SecurityHeadersFilter
 /**
  * Provides filters.
  */
-class Filters @Inject() (csrfFilter: CSRFFilter,  corsFilter: CORSFilter, securityHeadersFilter: SecurityHeadersFilter) extends HttpFilters {
+class Filters @Inject() (csrfFilter: CSRFFilter, corsFilter: CORSFilter, securityHeadersFilter: SecurityHeadersFilter) extends HttpFilters {
   override def filters: Seq[EssentialFilter] = Seq(csrfFilter, corsFilter, securityHeadersFilter)
 }

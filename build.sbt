@@ -4,7 +4,7 @@ organization := "com.letusfly85"
 
 version := "1.0.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, sbtdocker.DockerPlugin)
 
 scalaVersion := "2.12.4"
 
@@ -103,3 +103,50 @@ scalariformPreferences := scalariformPreferences.value
 // ScalikeJDBC settings
 //********************************************************
 scalikejdbcSettings
+
+//********************************************************
+// assembly settings
+//********************************************************
+assemblyMergeStrategy in assembly := {
+  case PathList("javax", "servlet", xs @ _*)         => MergeStrategy.first
+  case PathList("org", "apache", xs @ _*) => MergeStrategy.last
+  case PathList("com", "google", xs @ _*) => MergeStrategy.last
+  case PathList("com", "typesafe", xs @ _*) => MergeStrategy.last
+  case PathList("org", "quartz-scheduler", xs @ _*) => MergeStrategy.last
+  case PathList("net", "sf.ehcache", xs @ _*) => MergeStrategy.last
+  case PathList(ps @ _*) if ps.last endsWith "public-api-types" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith "reference-overrides.conf" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith "messages" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".properties" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".xml" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".types" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".class" => MergeStrategy.first
+  case "application.conf"                            => MergeStrategy.concat
+  case "unwanted.txt"                                => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
+
+//********************************************************
+// Docker settings
+//********************************************************
+imageNames in docker := Seq(
+  ImageName(s"${organization.value}/${name.value}:latest")
+)
+
+dockerfile in docker := {
+  // The assembly task generates a fat JAR file
+  val artifact: File = assembly.value
+  val artifactTargetPath = s"/app/${artifact.name}"
+
+  new Dockerfile {
+    from("java")
+    add(artifact, artifactTargetPath)
+    copy(baseDirectory(_ / "conf/application.docker.conf" ).value,"/app/application.conf")
+    entryPoint("java", "-jar", "-Dplay.crypto.secret='*******'", "-Dconfig.file=/app/application.conf",  artifactTargetPath)
+  }
+}
+
+buildOptions in docker := BuildOptions(cache = false)
